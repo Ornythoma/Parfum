@@ -1,0 +1,39 @@
+   double x = 5.0;
+
+    int w = 600;//(MediaQuery.of(context).size.width * 0.95).toInt();
+    int h = 600;//(MediaQuery.of(context).size.height * 0.7).toInt();
+
+    double RADIUS = 6378.137;
+
+    double DISTANCE = 10.0;
+    double PI = 3.141592;
+
+    double lat = (_currentPosition?.latitude ?? _lat1);
+    double lon = (_currentPosition?.longitude ?? _lon1);
+
+    double lat_1 = (180/3.141592)*asin(sin(3.141592*lat/180)*cos(DISTANCE/RADIUS)+cos(3.141592*lat/180)*sin(DISTANCE/RADIUS)*cos((-1)*PI/4));
+    double lon_1 = (180/3.141592)*((3.141592/180)*lon + atan2(sin((-1)*PI/4)*sin(DISTANCE/RADIUS)*cos((3.141592/180)*lat), cos(DISTANCE/RADIUS) - sin((PI/180)*lat)*sin((PI/180)*lat_1)));
+
+
+    double lat_2 = (180/3.141592)*asin(sin(3.141592*lat/180)*cos(DISTANCE/RADIUS)+cos(3.141592*lat/180)*sin(DISTANCE/RADIUS)*cos(3*PI/4));
+    double lon_2 = (180/3.141592)*((3.141592/180)*lon + atan2(sin(3*PI/4)*sin(DISTANCE/RADIUS)*cos((3.141592/180)*lat), cos(DISTANCE/RADIUS) - sin((PI/180)*lat)*sin((PI/180)*lat_2)));
+
+    // double ratio = h / w;
+    //
+    // double Re = 6378.137;
+    // double y = ratio * x;
+    //
+    // double dLat = x / (2*Re);
+    // double dLon = y / (2*Re*cos(3.141592*lat/180));
+    //
+    // double lat_1 = lat - (dLat*180/3.141592);
+    // double lat_2 = lat + (dLat*180/3.141592);
+    //
+    // double lon_1 = lon - (dLon*180/3.141592);
+    // double lon_2 = lon + (dLon*180/3.141592);
+
+    // double lat_1 = (_currentPosition?.latitude ?? _lat1) - ((y/2) / 6378.137)*(180 / 3.14159);
+    // double lat_2 = (_currentPosition?.latitude ?? _lat1) + ((y/2) / 6378.137)*(180 / 3.14159);
+    //
+    // double lon_1 = (_currentPosition?.longitude ?? _lon1) - ((x/2) / 6378.137)*(180 / 3.14159)/cos((_currentPosition?.latitude ?? _lat1)*3.14159/180);
+    // double lon_2 = (_currentPosition?.longitude ?? _lon1) + ((x/2) / 6378.137)*(180 / 3.14159)/cos((_currentPosition?.latitude ?? _lat1)*3.14159/180);
