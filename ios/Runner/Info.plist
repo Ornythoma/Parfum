@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>https</string>
-        <string>http</string>
-    </array>
     <key>NSCameraUsageDescription</key>
     <string>This app needs access to the camera to take picture of the source of the smell.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

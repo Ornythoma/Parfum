@@ -7,8 +7,31 @@ import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
+import 'smellSelect.dart';
+import 'report.dart';
 import 'endScreen.dart';
 
+class HttpService {
+  Future<dynamic> sendRequestToServer(
+      dynamic model, String reqType, bool isTokenHeader, String token) async {
+    HttpClient client = new HttpClient();
+    client.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => true);
+    HttpClientRequest request = await client.postUrl(Uri.parse(
+        "https://smell.me/$reqType")); //${serverConstants.serverUrl}$reqType
+    request.headers.set('Content-Type', 'application/json');
+    if (isTokenHeader) {
+      request.headers.set('Authorization', 'Bearer $token');
+    }
+    request.add(utf8.encode(jsonEncode(model)));
+    HttpClientResponse result = await request.close();
+    if (result.statusCode == 200) {
+      return jsonDecode(await result.transform(utf8.decoder).join());
+    } else {
+      return null;
+    }
+  }
+}
 
 class SmellRadioModel {
   bool isSelected;
@@ -201,7 +224,7 @@ class _ReportState extends State<Report> {
     {
       'question': 'L\'odeur est-elle légère ou forte?',
       'answers': [
-        'Pas notée',
+        'Pas encore notée',
         'Très légère',
         'Plutôt légère',
         'Présente',
@@ -276,8 +299,6 @@ class _ReportState extends State<Report> {
     }
   }
 
-  // TODO: Try to make a nice Likert Class here?
-  // https://flutterbyexample.com/lesson/extending-classes-inheritance
   Widget _buildLikertStrength() {
     return Container(
       padding: new EdgeInsets.all(10.0),
@@ -287,8 +308,6 @@ class _ReportState extends State<Report> {
             children: [
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5.0),
-                // child: Text(smell_questions[0]['question'],
-                //     textAlign: TextAlign.start, style: TextStyle()),
                 child: Text(smell_questions[0]['question'],
                     textAlign: TextAlign.start, style: TextStyle()),
               ),
@@ -299,8 +318,6 @@ class _ReportState extends State<Report> {
               Container(
                 padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
                 child: Text(
-                  // TODO: ALIGN TWO WORDS LEFT AND RIGHT WHEN VALUE IS NULL
-                  // e.g. w/   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   smell_questions[0]['answers'][_strengthValue],
                   textAlign: TextAlign.start,
                   style: TextStyle(),
@@ -719,9 +736,7 @@ class _ReportState extends State<Report> {
                       setState(() {
                         // TODO? : USE MODAL CLASS?
                         // smellChoices[i].isSelected = !smellChoices[i].isSelected;
-                        smellChoices.forEach((element) {
-                          element.isSelected = false;
-                        });
+                        smellChoices.forEach((element) {element.isSelected = false;});
                         smellChoices[i].isSelected = true;
                       });
                     }),
@@ -803,9 +818,7 @@ class _ReportState extends State<Report> {
                 onPressed: () {
                   setState(() {
                     codeSmellDialog = valueSmellText;
-                    smellChoices.forEach((element) {
-                      element.isSelected = false;
-                    });
+                    smellChoices.forEach((element) {element.isSelected = false;});
                     smellChoices.add(SmellRadioModel(true, valueSmellText));
                     Navigator.pop(context);
                   });
@@ -828,7 +841,7 @@ class _ReportState extends State<Report> {
         child: Container(
           padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
           child: Text(
-            'Cliquez sur tous les mots correspondants aux symptomes ressentis',
+            'Cliquez sur tous les mots correspondants àaux symptomes ressentis',
             softWrap: true,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
@@ -871,6 +884,34 @@ class _ReportState extends State<Report> {
     super.dispose();
   }
 
+  // final Position _currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+  //
+  // _getCurrentLocation() {
+  //   Geolocator
+  //     .getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true)
+  //       .then((Position position) {
+  //         setState(() {
+  //           _currentPosition = position;
+  //         });
+  //   }).catchError((e) {
+  //     print(e);
+  //   });
+  // }
+
+  // void getLocation() async {
+  //   Position position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.best,
+  //   );
+  //   print(position);
+  // }
+  //
+  //
+  // Future<Position> getPosition() async {
+  //   Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+  //   print(position);
+  //   return position;
+  // }
+
   Future<http.Response> sendReport(String json) async {
     return http.post(Uri.parse('https://logair.eu/json_pg.php'),
         headers: {"Content-Type": "application/json"}, body: json);
@@ -891,7 +932,7 @@ class _ReportState extends State<Report> {
 
     Map jsonData = {
       'time': DateTime.now().millisecondsSinceEpoch,
-      'longitude': position.longitude, //6.7484,
+      'longitude': position.longitude,//6.7484,
       'latitude': position.latitude,
       'xxx': position.altitude,
       'smells': _listSmells.toString(),
@@ -930,6 +971,8 @@ class _ReportState extends State<Report> {
               child: Column(
                 //  mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  _smellList(),
+                  _divider(),
                   Container(
                     padding: new EdgeInsets.all(10.0),
                     child: Text(
@@ -937,8 +980,6 @@ class _ReportState extends State<Report> {
                       textAlign: TextAlign.left,
                     ),
                   ),
-                  _smellList(),
-                  _divider(),
                   _buildLikertStrength(),
                   _buildLikertAgreeableness(),
                   _buildLikertNaturalness(),

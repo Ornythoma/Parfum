@@ -30,9 +30,6 @@ dependencies:
   geolocator: ^7.0.3
 #  geocoding:
   http: ^0.13.1
-  shared_preferences:
-  url_launcher:
-  transparent_image: ^2.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -57,9 +54,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/
-    - assets/images/
-    - assets/images/qgis_mapserv.jpeg
+    - images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

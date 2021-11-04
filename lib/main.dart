@@ -7,8 +7,6 @@ import 'mainScreen.dart';
 import 'consentScreen.dart';
 import 'reportScreen.dart';
 import 'SplashScreen.dart';
-import 'endScreen.dart';
-import 'routes.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
@@ -21,7 +19,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         initialRoute: '/',
-        routes: routes,
+        routes: <String, WidgetBuilder>{
+          '/': (BuildContext context) => SplashScreen(),
+          '/consent': (BuildContext context) => ConsentScreen(),
+          '/main': (BuildContext context) => MainScreen(),
+          '/report': (BuildContext context) => Report(),
+//          '/endscreen': (BuildContext context) => EndScreen(),
+//          '/test' : (BuildContext context) => Report(),
+        }
     );
   }
 }

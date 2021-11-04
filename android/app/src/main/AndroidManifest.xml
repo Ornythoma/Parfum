@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
-        android:label="Parfum"
+        android:label="smell_2021_04_26"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
